@@ -68,16 +68,9 @@ public class HouseController {
     }
 
 
-    //    Cái này là hàm save thường
-//    @PostMapping
-//    public ResponseEntity<Product> saveProduct (@Valid @RequestBody Product product) {
-//        return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
-//    }
-
-
 //        Cái này không save
     @PostMapping
-    public ResponseEntity<House> handleFileUpload (@Valid @RequestParam("file") MultipartFile file, House house) {
+    public ResponseEntity<House> handleFileUpload (@RequestParam("file") MultipartFile file, House house) {
         String fileName = file.getOriginalFilename();
         house.setImage(fileName);
         try {
