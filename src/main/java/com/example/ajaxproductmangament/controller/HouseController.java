@@ -42,14 +42,21 @@ public class HouseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<House> update(@RequestBody House house, @PathVariable Long id) {
+    public ResponseEntity<House> update(@RequestParam("fileEdit") MultipartFile file, @PathVariable Long id, House house) {
         Optional<House> houseOptional = houseService.findById(id);
-        if (!houseOptional.isPresent()) {
+        if(!houseOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String fileName = file.getOriginalFilename();
+        house.setImage(fileName);
+        try {
+            file.transferTo(new File("C:\\Users\\chopp\\Desktop\\MD4new\\AJAX-product-mangament\\src\\main\\resources\\templates\\photos\\" + fileName));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         house.setId(houseOptional.get().getId());
         houseService.save(house);
-        return new ResponseEntity<>(house,HttpStatus.OK);
+        return new ResponseEntity<>(house, HttpStatus.CREATED);
     }
 
 //    @PostMapping

@@ -112,15 +112,54 @@
 </div>
 
 
+
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="id">
+                    <label> Name </label>
+                    <input type="text" name="name" class="form-control" id="nameEdit">
+                    <label> Address </label>
+                    <input type="text" name="address" class="form-control" id="addressEdit">
+                    <label> Bedroom </label>
+                    <input type="number" name="numberOfBedroom" class="form-control" id="bedroomEdit">
+                    <label> Bathroom </label>
+                    <input type="number" name="numberOfBathroom" class="form-control" id="bathroomEdit">
+                    <label> Price </label>
+                    <input type="number" name="pricePerDay" class="form-control" id="priceEdit">
+                    <label> Image </label>
+                    <div id="newFile"></div>
+                    <input type="file" name="fileEdit" class="form-control" >
+
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" data-dismiss="modal" onclick="update()">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let tbody = document.getElementById("list");
-    let show = document.getElementById('display')
-    let addForm = document.getElementById("addForm")
+    let addForm = document.getElementById("addForm");
+    let editForm=document.getElementById("editForm");
     loadData()
 
     function loadData() {
         $.ajax({
-            type: 'GET',
+            type: "GET",
             url: 'http://localhost:8084/houses',
             success: function (data) {
                 display(data);
@@ -133,7 +172,7 @@
     }
 
     function display(data) {
-        let str = "";minitest1
+        let str = "";
         console.log(data)
         for (let i = 0; i < data.length; i++) {
             str += `<tr>
@@ -142,9 +181,10 @@
                                 <td>${data[i].address}</td>
                                 <td>${data[i].numberOfBedroom}</td>
                                 <td>${data[i].numberOfBathroom}</td>
-                                 <td>${data[i].pricePerDay}</td>
+                                <td>${data[i].pricePerDay}</td>
                                 <td><img src = "photos/${data[i].image}" width="100px"></td>
-
+                                <td><button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1" onclick="showEditForm(${data[i].id})">Edit</button></td>
+                                <td><button class="btn btn-primary" onclick="showDeleteForm1(${data[i].id})">Delete</button></td>
                             </tr>`
         }
         tbody.innerHTML = str;
@@ -174,6 +214,57 @@ console.log(data)
         })
 
     }
+
+    function showEditForm(id) {
+        // $("#exampleModal1").modal("show");
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8084/houses/" + id,
+            success: function (data) {
+                console.log(data)
+                document.getElementById('id').value = data.id;
+                document.getElementById('nameEdit').value = data.name;
+                document.getElementById('addressEdit').value = data.address;
+                document.getElementById('bedroomEdit').value = data.numberOfBedroom;
+                document.getElementById('bathroomEdit').value = data.numberOfBathroom;
+                document.getElementById('priceEdit').value = data.pricePerDay;
+                document.getElementById('newFile').innerHTML = `<img src="photos/${data.image}" width="100px" ">`;
+
+            }
+        })
+    }
+
+
+    function update() {
+        let id = document.getElementById('id').value;
+        let formData = new FormData(editForm);
+
+        $.ajax({
+            type:"PUT",
+            enctype:'multipart/form-data',
+            url:"http://localhost:8084/houses/"+id,
+            data :formData,
+            processData : false,
+            contentType : false,
+            cache : false,
+            success: function () {
+
+                // $('#exampleModal').modal('hide');
+
+
+
+                loadData();
+                editForm.reset();
+
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+
 
 </script>
 </body>
