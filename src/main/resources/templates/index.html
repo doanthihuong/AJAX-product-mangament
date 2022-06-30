@@ -184,7 +184,7 @@
                                 <td>${data[i].pricePerDay}</td>
                                 <td><img src = "photos/${data[i].image}" width="100px"></td>
                                 <td><button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1" onclick="showEditForm(${data[i].id})">Edit</button></td>
-                                <td><button class="btn btn-primary" onclick="showDeleteForm1(${data[i].id})">Delete</button></td>
+                                <td><button class="btn btn-primary" onclick="showDeleteForm(${data[i].id})">Delete</button></td>
                             </tr>`
         }
         tbody.innerHTML = str;
@@ -235,7 +235,7 @@ console.log(data)
         })
     }
 
-
+    //hàm sửa :  sửa cả ảnh
     function update() {
         let id = document.getElementById('id').value;
         let formData = new FormData(editForm);
@@ -263,6 +263,26 @@ console.log(data)
                 console.log(error)
             }
         })
+    }
+
+    // hàm xóa
+    function showDeleteForm(id) {
+        if (confirm("Bạn có chắc chắn muốn xoá sản phẩm ko ???")) {
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                type: 'DELETE',
+                url: 'http://localhost:8084/houses/'+id,
+                success: function (){
+                    loadData()
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }
     }
 
 

@@ -88,10 +88,6 @@ public class HouseController {
         return new ResponseEntity<>(houseService.save(house),HttpStatus.CREATED);
     }
 
-
-
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
